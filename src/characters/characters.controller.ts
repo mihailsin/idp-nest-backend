@@ -3,6 +3,8 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Patch,
     Post,
@@ -21,7 +23,16 @@ export class CharactersController {
 
     @Get(':id')
     async getOne(@Param('id') id: string) {
-        return await this.charactersService.getOne(id);
+        try {
+            return await this.charactersService.getOne(id);
+        } catch (e) {
+            if (e.code === 'P2025') {
+                throw new HttpException(
+                    'Character not found',
+                    HttpStatus.NOT_FOUND
+                );
+            }
+        }
     }
 
     @Post()
@@ -31,11 +42,29 @@ export class CharactersController {
 
     @Patch(':id')
     async update(@Param('id') id: string, @Body() dto: UpdateCharacterDto) {
-        return await this.charactersService.update(id, dto);
+        try {
+            return await this.charactersService.update(id, dto);
+        } catch (e) {
+            if (e.code === 'P2025') {
+                throw new HttpException(
+                    'Character not found',
+                    HttpStatus.NOT_FOUND
+                );
+            }
+        }
     }
 
     @Delete(':id')
     async delete(@Param('id') id: string) {
-        return await this.charactersService.delete(id);
+        try {
+            return await this.charactersService.delete(id);
+        } catch (e) {
+            if (e.code === 'P2025') {
+                throw new HttpException(
+                    'Character not found',
+                    HttpStatus.NOT_FOUND
+                );
+            }
+        }
     }
 }

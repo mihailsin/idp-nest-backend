@@ -11,7 +11,7 @@ export class CharactersService {
     }
 
     async getOne(id: string): Promise<Character> {
-        return this.prisma.character.findUnique({
+        return this.prisma.character.findUniqueOrThrow({
             where: { character_id: id },
         });
     }
