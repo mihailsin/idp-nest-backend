@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Character } from './characters.interface';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { CreateCharacterDto, UpdateCharacterDto } from './dtos';
 
 @Injectable()
@@ -20,9 +20,10 @@ export class CharactersService {
         firstName,
         lastName,
         dateOfBirth,
+        image,
     }: CreateCharacterDto): Promise<Character> {
         return this.prisma.character.create({
-            data: { firstName, lastName, dateOfBirth },
+            data: { firstName, lastName, dateOfBirth, image },
         });
     }
 

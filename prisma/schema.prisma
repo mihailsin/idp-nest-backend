@@ -18,6 +18,7 @@ model Character {
   firstName    String
   lastName     String
   dateOfBirth  String
+  image        String
 
   @@map("characters")
 }

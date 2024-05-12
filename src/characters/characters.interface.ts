@@ -3,4 +3,5 @@ export interface Character {
     firstName: string;
     lastName: string;
     dateOfBirth: string;
+    image: string;
 }

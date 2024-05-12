@@ -22,6 +22,9 @@ export class CreateCharacterDto {
     @IsNotEmpty()
     @Length(10)
     dateOfBirth: string;
+
+    @IsString()
+    image: string;
 }
 
 export class UpdateCharacterDto extends PartialType(CreateCharacterDto) {}
