@@ -22,3 +22,17 @@ model Character {
 
   @@map("characters")
 }
+
+model User {
+  id           String @id @default(uuid())
+  email        String @unique
+  password     String 
+  firstName    String
+  lastName     String
+  middleName   String?
+  dateOfBirth  DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}

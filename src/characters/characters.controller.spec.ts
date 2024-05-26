@@ -11,6 +11,7 @@ describe('CharactersController', () => {
 
     const serviceMock = {
         getAll: jest.fn(x => x),
+        getOne: jest.fn(x => x),
     };
 
     const repositoryMock = {
@@ -51,16 +52,16 @@ describe('CharactersController', () => {
                     provide: CharactersService,
                     useValue: serviceMock,
                 },
-                {
-                    provide: PrismaService,
-                    useValue: repositoryMock,
-                },
+                // {
+                //     provide: PrismaService,
+                //     useValue: repositoryMock,
+                // },
             ],
         }).compile();
 
         controller = module.get<CharactersController>(CharactersController);
         service = module.get<CharactersService>(CharactersService);
-        repository = module.get<PrismaService>(PrismaService);
+        // repository = module.get<PrismaService>(PrismaService);
     });
 
     it('should be defined', () => {
@@ -78,6 +79,23 @@ describe('CharactersController', () => {
             expect(result).toBeDefined();
             expect(result).toHaveLength(3);
             expect(result).toEqual(charactersMock);
+        });
+    });
+
+    describe('getOne', () => {
+        it('should get object by id', async () => {
+            jest.spyOn(serviceMock, 'getOne').mockReturnValueOnce(
+                charactersMock[0]
+            );
+            const result = await controller.getOne(
+                charactersMock[0].carachter_id
+            );
+
+            expect(service.getOne).toHaveBeenCalledTimes(1);
+            expect(service.getOne).toHaveBeenCalledWith(
+                charactersMock[0].carachter_id
+            );
+            expect(result).toMatchObject(charactersMock[0]);
         });
     });
 });
