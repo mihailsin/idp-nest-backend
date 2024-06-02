@@ -3,11 +3,13 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto, LoginUserDto } from './dtos/user.dto';
 import { BcryptService } from 'src/lib';
 import { User } from './user.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
+        private jwtService: JwtService,
         private encryptor: BcryptService
     ) {}
 
@@ -24,7 +26,7 @@ export class AuthService {
         lastName,
         middleName,
         dateOfBirth,
-    }: CreateUserDto): Promise<any> {
+    }: CreateUserDto) {
         const user = await this.getUser(email);
         if (user) {
             throw new HttpException(
@@ -45,7 +47,10 @@ export class AuthService {
         });
 
         if (createdUser) {
-            return createdUser;
+            const payload = { userId: createdUser.id };
+            const jwt = this.jwtService.sign(payload);
+
+            return { access_token: jwt };
         }
     }
 
@@ -64,6 +69,9 @@ export class AuthService {
         if (!passwordIsValid)
             throw new HttpException('Wrong Password!', HttpStatus.UNAUTHORIZED);
 
-        return 'Successfully logged in!';
+        const payload = { userId: user.id };
+        const jwt = this.jwtService.sign(payload);
+
+        return { access_token: jwt };
     }
 }

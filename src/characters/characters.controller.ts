@@ -8,14 +8,16 @@ import {
     Param,
     Patch,
     Post,
+    UseGuards,
 } from '@nestjs/common';
 import { CharactersService } from './characters.service';
 import { CreateCharacterDto, UpdateCharacterDto } from './dtos';
+import { JwtAuthGuard } from '../auth/guards';
 
+@UseGuards(JwtAuthGuard)
 @Controller('characters')
 export class CharactersController {
     constructor(private charactersService: CharactersService) {}
-
     @Get()
     async getAll() {
         return await this.charactersService.getAll();
