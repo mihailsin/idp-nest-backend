@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CharactersController } from './characters.controller';
 import { CharactersService } from './characters.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 describe('CharactersController', () => {
     let controller: CharactersController;
@@ -52,7 +52,6 @@ describe('CharactersController', () => {
 
         controller = module.get<CharactersController>(CharactersController);
         service = module.get<CharactersService>(CharactersService);
-        // repository = module.get<PrismaService>(PrismaService);
     });
 
     class ExpectedNotFoundError extends Error {
