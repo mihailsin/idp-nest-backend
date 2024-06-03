@@ -11,6 +11,15 @@ describe('AuthService', () => {
     let repository: PrismaService;
     let bcryptService: BcryptService;
 
+    const jwtServiceMock = {
+        sign: jest.fn(x => x),
+    };
+
+    const bcryptServiceMock = {
+        hashString: jest.fn(x => x),
+        compare: jest.fn(x => x),
+    };
+
     const repositoryMock = {
         user: {
             findUnique: jest.fn(x => x),
@@ -19,12 +28,15 @@ describe('AuthService', () => {
     };
 
     const userMock = {
+        id: '1234-4321',
         email: 'superuser@test.com',
         firstName: 'super',
         middleName: 'midName',
         lastName: 'user',
-        dateOfBirth: '1988-01-20T00:00:00.000Z',
+        dateOfBirth: new Date(),
         password: 'testpassword',
+        createdAt: new Date(),
+        updatedAt: new Date(),
     };
 
     const resultMock = {
@@ -37,8 +49,8 @@ describe('AuthService', () => {
             providers: [
                 AuthService,
                 { provide: PrismaService, useValue: repositoryMock },
-                { provide: JwtService, useValue: {} },
-                { provide: BcryptService, useValue: {} },
+                { provide: JwtService, useValue: jwtServiceMock },
+                { provide: BcryptService, useValue: bcryptServiceMock },
             ],
         }).compile();
 
@@ -58,18 +70,54 @@ describe('AuthService', () => {
             jest.spyOn(repositoryMock.user, 'create').mockReturnValueOnce(
                 userMock
             );
-            jest.spyOn(service, 'signUp').mockImplementationOnce(
-                async userMock => resultMock
-            );
             const { email } = userMock;
             jest.spyOn(service, 'getUser').mockImplementationOnce(
                 async email => null
             );
-            const result = await service.signUp(userMock);
+            jest.spyOn(bcryptService, 'hashString').mockReturnValueOnce(
+                Promise.resolve('$SDe@!FXXC')
+            );
+            jest.spyOn(jwtService, 'sign').mockReturnValueOnce(
+                resultMock.access_token
+            );
+            const result = await service.signUp({
+                email: userMock.email,
+                firstName: userMock.firstName,
+                lastName: userMock.lastName,
+                middleName: userMock.middleName,
+                dateOfBirth: '1988',
+                password: userMock.password,
+            });
 
-            expect(service.signUp).toHaveBeenCalledWith(userMock);
-            // expect(service.getUser).toHaveBeenCalledWith(email);
-            // expect(repository.user.create).toHaveBeenCalledTimes(1);
+            expect(service.getUser).toHaveBeenCalledWith(email);
+            expect(repository.user.create).toHaveBeenCalledTimes(1);
+            expect(result).toBeDefined();
+            expect(result).toEqual(resultMock);
+        });
+    });
+
+    describe('login', () => {
+        it('should return token', async () => {
+            jest.spyOn(repositoryMock.user, 'findUnique').mockReturnValueOnce(
+                userMock
+            );
+            const { email } = userMock;
+            jest.spyOn(service, 'getUser').mockImplementationOnce(async email =>
+                Promise.resolve(userMock)
+            );
+            jest.spyOn(bcryptService, 'compare').mockReturnValueOnce(
+                Promise.resolve(true)
+            );
+            jest.spyOn(jwtService, 'sign').mockReturnValueOnce(
+                resultMock.access_token
+            );
+            const result = await service.login({
+                email: userMock.email,
+                password: userMock.password,
+            });
+
+            expect(service.getUser).toHaveBeenCalledWith(email);
+            expect(repository.user.create).toHaveBeenCalledTimes(1);
             expect(result).toBeDefined();
             expect(result).toEqual(resultMock);
         });
