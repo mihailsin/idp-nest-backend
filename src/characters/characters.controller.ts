@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../auth/guards';
 @UseGuards(JwtAuthGuard)
 @Controller('characters')
 export class CharactersController {
+    // comment
     constructor(private charactersService: CharactersService) {}
     @Get()
     async getAll() {
