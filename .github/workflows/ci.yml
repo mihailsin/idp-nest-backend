@@ -1,26 +1,25 @@
-name: idp-api
+# .github/workflows/ci.yml
 
 on:
   pull_request:
-    branches:
-      - main
+  push:
+    branches: [main]
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
-    container:
-      image: node:22
     steps:
       - uses: actions/checkout@v3
-        with:
-          node-version: 22
-      - run: npm ci
-      - run: npm run test
-      - run: npm run build
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    env:
-      deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-    run: |
-      curl "$deploy_url"
-        
+      - name: Test
+        run: |
+          npm ci
+          npm run build
+          npmrun test
+
+      - name: Deploy
+        # Only run this step if the branch is main
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
