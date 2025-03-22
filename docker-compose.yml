@@ -1,19 +1,19 @@
 version: '3.5'
 services:
-    db:
-        image: postgres
-        restart: always
-        environment:
-            POSTGRES_DB: test
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-        container_name: postgres
-        # volumes:
-        #     - ./pgdata:/var/lib/postgresql/data
-        ports:
-            - 5432:5432
-        networks:
-            - postgres-db-network
+    # db:
+    #     image: postgres
+    #     restart: always
+    #     environment:
+    #         POSTGRES_DB: test
+    #         POSTGRES_USER: postgres
+    #         POSTGRES_PASSWORD: postgres
+    #     container_name: postgres
+    #     # volumes:
+    #     #     - ./pgdata:/var/lib/postgresql/data
+    #     ports:
+    #         - 5432:5432
+    #     networks:
+    #         - postgres-db-network
     app:
         build:
             context: .
@@ -23,12 +23,12 @@ services:
             - .env
         ports:
             - '${PORT}:${PORT}'
-        depends_on:
-            - db
-        networks:
-            - postgres-db-network
+        # depends_on:
+        #     - db
+        # networks:
+        #     - postgres-db-network
         volumes:
             - ./src:/app/src
-networks:
-    postgres-db-network:
-        driver: bridge
+# networks:
+#     postgres-db-network:
+#         driver: bridge
