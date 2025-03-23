@@ -12,7 +12,7 @@
     "predeploy": "npm install && npm run build",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:instance": "pm2 start",
+    "start:instance": "npx prisma migrate dev && pm2 start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -41,6 +41,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pm2": "^6.0.5",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
