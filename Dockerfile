@@ -9,4 +9,4 @@ RUN npm run predeploy
 RUN npm run build
 # RUN npx prisma migrate deploy
 
-CMD ["npm", "run", "start:instance"]
+CMD ["npm", "run", "start:migrate:dev"]
